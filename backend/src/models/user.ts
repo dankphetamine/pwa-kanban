@@ -18,7 +18,7 @@ export class User {
 	@Field(() => String, { nullable: true })
 	displayName?: string | null;
 
-	@Field(_type => Post, { nullable: true })
+	@Field(() => [Post], { nullable: true })
 	posts?: [Post] | null;
 
 	@Field()
