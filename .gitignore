@@ -97,4 +97,3 @@ typings/
 
 ### vscode ###
 .vscode/*
-!.vscode/settings.json
