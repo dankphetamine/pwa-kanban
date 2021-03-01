@@ -67,9 +67,9 @@ export class UserResolver {
 	getSelf(@Ctx() { prisma: { user }, req }: Context) {
 		let id: number;
 
-		typeof req.session.userId === 'string' ? (id = parseInt(req.session.userId)) : (id = req.session.userId);
+		typeof req.session.userId === 'string' ? (id = parseInt(req.session.userId)) : (id = req.session.userId | 0);
 
-		console.log('id', id);
+		if (!req.session.userId) throw new Error(Text.auth.getSelf);
 
 		return user.findUnique({ where: { id } });
 	}
