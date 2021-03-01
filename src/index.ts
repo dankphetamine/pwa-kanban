@@ -7,13 +7,13 @@ import { buildSchema } from 'type-graphql';
 import prisma, { Context } from './models/context';
 import { PostResolver } from './resolvers/postResolver';
 import { UserResolver } from './resolvers/userResolver';
-import { PROD, sessionSecret } from './utils/constants';
+import { port, prod, sessionSecret, startMsg } from './utils/constants';
 
 const main = async () => {
 	const apollo = new ApolloServer({
 		schema: await buildSchema({ resolvers: [UserResolver, PostResolver], validate: true }),
 		context: ({ req, res }): Context => ({ prisma, req, res }),
-		debug: !PROD,
+		debug: !prod,
 	});
 
 	const app = express();
@@ -34,7 +34,7 @@ const main = async () => {
 
 	apollo.applyMiddleware({ app });
 
-	app.listen(4321, () => console.log('Backend running & listening on http://localhost:4321/graphql'));
+	app.listen(port, () => console.log(startMsg));
 };
 
 main().catch(err => console.error(err));

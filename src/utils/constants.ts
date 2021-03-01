@@ -1,4 +1,4 @@
-export const PROD = process.env.NODE_ENV === 'production';
+export const prod = process.env.NODE_ENV === 'production';
 
 export const Text = {
 	auth: {
@@ -16,3 +16,5 @@ export enum Lengths {
 }
 
 export const sessionSecret = '12345';
+export const port = 4000;
+export const startMsg = `Backend running & listening on http://localhost${port}/graphql`;
