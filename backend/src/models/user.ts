@@ -1,7 +1,19 @@
-import { IsEmail } from 'class-validator';
+import { IsEmail, MinLength } from 'class-validator';
 import 'reflect-metadata';
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
+import { Lengths } from '../utils/constants';
 import { Post } from './post';
+
+@InputType()
+export class AuthInput {
+	@Field()
+	@IsEmail()
+	email: string;
+
+	@Field()
+	@MinLength(Lengths.password)
+	password: string;
+}
 
 @ObjectType()
 export class User {
@@ -9,17 +21,16 @@ export class User {
 	id: number;
 
 	@Field()
-	@IsEmail()
-	email!: string;
+	email: string;
 
 	//Not a field, thus not exposed to GraphQL
 	password: string;
 
 	@Field(() => String, { nullable: true })
-	displayName?: string | null;
+	name?: string;
 
 	@Field(() => [Post], { nullable: true })
-	posts?: [Post] | null;
+	posts?: [Post];
 
 	@Field()
 	createdAt: Date;
