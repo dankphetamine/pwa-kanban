@@ -1,16 +1,21 @@
 import { PrismaClient } from '@prisma/client';
+import { Request, Response } from 'express';
+
+declare module 'express-session' {
+	interface Session {
+		userId: string | number;
+	}
+}
 
 const prisma = new PrismaClient({
 	log: ['error', 'warn'],
 	errorFormat: 'minimal',
 });
 
-export interface Database {
+export interface Context {
 	prisma: PrismaClient;
+	req: Request;
+	res: Response;
 }
 
-function createDb(): Database {
-	return { prisma };
-}
-
-export default createDb();
+export default prisma;
