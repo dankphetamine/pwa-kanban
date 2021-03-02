@@ -7,7 +7,7 @@ import { buildSchema } from 'type-graphql';
 import prisma, { Context } from './models/context';
 import { PostResolver } from './resolvers/postResolver';
 import { UserResolver } from './resolvers/userResolver';
-import { port, prod, sessionSecret, startMsg } from './utils/constants';
+import { frontEnd, port, prod, sessionSecret, startMsg } from './utils/constants';
 
 const main = async () => {
 	const apollo = new ApolloServer({
@@ -32,7 +32,7 @@ const main = async () => {
 		}),
 	);
 
-	apollo.applyMiddleware({ app });
+	apollo.applyMiddleware({ app, cors: { origin: frontEnd, credentials: true } });
 
 	app.listen(port, () => console.log(startMsg));
 };

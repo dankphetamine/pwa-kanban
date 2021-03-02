@@ -18,3 +18,5 @@ export enum Lengths {
 export const sessionSecret = '12345';
 export const port = 4000;
 export const startMsg = `Backend running & listening on http://localhost${port}/graphql`;
+const frontEndPort = 3000;
+export const frontEnd = `http://localhost:${frontEndPort}`;
