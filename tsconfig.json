@@ -22,6 +22,5 @@
 		"allowUnreachableCode": false,
 		"alwaysStrict": true
 	},
-	"include": ["**/src/**/*", "**/src/**/*.json", "prisma/seed.ts"],
 	"exclude": ["node_modules"]
 }

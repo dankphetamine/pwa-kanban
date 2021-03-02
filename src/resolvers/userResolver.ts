@@ -1,8 +1,8 @@
 import { AuthenticationError } from 'apollo-server-express';
 import argon2id from 'argon2';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
-import { Text } from '../../constants';
 import { User } from '../models/user';
+import { Text } from '../utils/constants';
 import { Context } from './../models/context';
 import { AuthInput } from './../models/user';
 
