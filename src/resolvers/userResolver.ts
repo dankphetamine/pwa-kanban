@@ -1,7 +1,8 @@
+import { AuthenticationError } from 'apollo-server-express';
 import argon2id from 'argon2';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Text } from '../../constants';
 import { User } from '../models/user';
-import { Text } from '../utils/constants';
 import { Context } from './../models/context';
 import { AuthInput } from './../models/user';
 
@@ -16,7 +17,7 @@ export class UserResolver {
 	) {
 		const dbUser = await user.findUnique({ where: { email: input.email } });
 
-		if (dbUser) throw new Error(Text.auth.register.email_taken);
+		if (dbUser) throw new AuthenticationError(Text.auth.register.email_taken);
 
 		const dbResponse = await user.create({
 			data: {
@@ -25,7 +26,7 @@ export class UserResolver {
 			},
 		});
 
-		if (!dbResponse) throw new Error(Text.auth.register.error);
+		if (!dbResponse) throw new AuthenticationError(Text.auth.register.error);
 
 		return dbResponse;
 	}
@@ -40,13 +41,13 @@ export class UserResolver {
 			where: { email: input.email },
 		});
 
-		if (!dbUser) throw new Error(Text.auth.login);
+		if (!dbUser) throw new AuthenticationError(Text.auth.login);
 
 		const passMatch = await argon2id.verify(dbUser.password, input.password);
 
-		if (!passMatch) throw new Error(Text.auth.login);
+		if (!passMatch) throw new AuthenticationError(Text.auth.login);
 
-		req.session.userId = dbUser.id.toString();
+		req.session.userId = dbUser.id;
 
 		return dbUser;
 	}
@@ -69,7 +70,7 @@ export class UserResolver {
 
 		typeof req.session.userId === 'string' ? (id = parseInt(req.session.userId)) : (id = req.session.userId | 0);
 
-		if (!req.session.userId) throw new Error(Text.auth.getSelf);
+		if (!req.session.userId) throw new AuthenticationError(Text.auth.getSelf);
 
 		return user.findUnique({ where: { id } });
 	}
