@@ -65,12 +65,12 @@ export class UserResolver {
 	}
 
 	@Query(() => User, { nullable: true })
-	getSelf(@Ctx() { prisma: { user }, req }: Context) {
+	getCurrentUser(@Ctx() { prisma: { user }, req }: Context) {
 		let id: number;
 
 		typeof req.session.userId === 'string' ? (id = parseInt(req.session.userId)) : (id = req.session.userId | 0);
 
-		if (!req.session.userId) throw new AuthenticationError(Text.auth.getSelf);
+		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
 		return user.findUnique({ where: { id } });
 	}

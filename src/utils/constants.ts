@@ -7,7 +7,7 @@ export const Text = {
 			error: 'Unable to register',
 		},
 		login: 'Invalid login credentials.',
-		getSelf: 'You are not currently logged in',
+		notLoggedIn: 'You are not currently logged in',
 	},
 };
 
