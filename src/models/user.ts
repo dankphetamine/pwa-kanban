@@ -29,6 +29,9 @@ export class User {
 	@Field(() => String, { nullable: true })
 	name?: string;
 
+	@Field(() => String, { nullable: true })
+	image?: string;
+
 	@Field(() => [Post], { nullable: true })
 	posts?: [Post];
 
