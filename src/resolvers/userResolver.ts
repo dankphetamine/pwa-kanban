@@ -5,6 +5,7 @@ import { User } from '../models/user';
 import { Text } from '../utils/constants';
 import { Context } from './../models/context';
 import { AuthInput } from './../models/user';
+import { cookieName } from './../utils/constants';
 
 @Resolver(User)
 export class UserResolver {
@@ -30,7 +31,9 @@ export class UserResolver {
 
 		return dbResponse;
 	}
+	//#endregion
 
+	//#region READ
 	@Mutation(() => User)
 	async login(
 		@Arg('input') input: AuthInput,
@@ -51,9 +54,7 @@ export class UserResolver {
 
 		return dbUser;
 	}
-	//#endregion
 
-	//#region READ
 	@Query(() => User, { nullable: true })
 	getUser(@Arg('email') email: string, @Ctx() { prisma: { user } }: Context) {
 		return user.findUnique({ where: { email } });
@@ -89,6 +90,14 @@ export class UserResolver {
 	//#endregion
 
 	//#region DELETE
-
+	@Mutation(() => Boolean)
+	logout(@Ctx() { req, res }: Context) {
+		res.clearCookie(cookieName);
+		return new Promise((resolve, reject) =>
+			req.session.destroy(err => {
+				return err ? reject('No session') : resolve(true);
+			}),
+		);
+	}
 	//#endregion
 }
