@@ -1,9 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
-
 declare module 'express-session' {
-	interface Session {
-		userId: string | number;
+	interface SessionData {
+		userId: number;
 	}
 }
 
