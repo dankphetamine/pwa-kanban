@@ -24,11 +24,11 @@ export class PostResolver {
 
 	//#region READ
 	@Query(() => [Post], { nullable: true })
-	getPosts(@Arg('input', { nullable: true }) input: PostFilterInput, @Ctx() { prisma: { post } }: Context) {
+	getPosts(@Arg('filter', { nullable: true }) filter: PostFilterInput, @Ctx() { prisma: { post } }: Context) {
 		return post.findMany({
-			take: input.limit ?? undefined,
-			skip: input.offest ?? undefined,
-			where: { userId: input.userId ?? undefined },
+			take: filter.limit,
+			skip: filter.offset,
+			where: { userId: filter.userId },
 			orderBy: { updatedAt: 'desc' },
 		});
 	}
