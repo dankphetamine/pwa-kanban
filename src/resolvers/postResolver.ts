@@ -1,26 +1,36 @@
+import { AuthenticationError } from 'apollo-server-express';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { Context } from '../models/context';
-import { Post } from '../models/post';
+import { Post, PostFilterInput } from '../models/post';
+import { Text } from '../utils/constants';
 
 @Resolver(Post)
 export class PostResolver {
 	//#region CREATE
 	@Mutation(() => Post)
-	createPost(@Arg('title') title: string, @Arg('content') content: string, @Ctx() { prisma: { post } }: Context) {
+	createPost(@Arg('title') title: string, @Arg('content') content: string, @Ctx() { prisma: { post }, req }: Context) {
+		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
+
 		return post.create({
 			data: {
 				title,
 				content,
 				userId: 3,
 			},
+			include: { author: true },
 		});
 	}
 	//#endregion
 
 	//#region READ
 	@Query(() => [Post], { nullable: true })
-	getPosts(@Ctx() { prisma: { post } }: Context) {
-		return post.findMany();
+	getPosts(@Arg('input', { nullable: true }) input: PostFilterInput, @Ctx() { prisma: { post } }: Context) {
+		return post.findMany({
+			take: input.limit ?? undefined,
+			skip: input.offest ?? undefined,
+			where: { userId: input.userId ?? undefined },
+			orderBy: { updatedAt: 'desc' },
+		});
 	}
 
 	@Query(() => Post, { nullable: true })

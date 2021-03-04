@@ -66,14 +66,10 @@ export class UserResolver {
 	}
 
 	@Query(() => User, { nullable: true })
-	getCurrentUser(@Ctx() { prisma: { user }, req }: Context) {
-		let id: number;
-
-		typeof req.session.userId === 'string' ? (id = parseInt(req.session.userId)) : (id = req.session.userId | 0);
-
+	currentUser(@Ctx() { prisma: { user }, req }: Context) {
 		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
-		return user.findUnique({ where: { id } });
+		return user.findUnique({ where: { id: req.session.userId } });
 	}
 	//#endregion
 
@@ -93,9 +89,17 @@ export class UserResolver {
 	@Mutation(() => Boolean)
 	logout(@Ctx() { req, res }: Context) {
 		res.clearCookie(cookieName);
-		return new Promise((resolve, reject) =>
+		return new Promise((resolve, _reject) =>
+			// req.session.destroy(err => {
+			// 	return err ? reject('No session') : resolve(true);
+			// }),
 			req.session.destroy(err => {
-				return err ? reject('No session') : resolve(true);
+				if (err) {
+					resolve(false);
+					return;
+				}
+
+				resolve(true);
 			}),
 		);
 	}
