@@ -1,4 +1,4 @@
-import { IsInt, IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator';
 import 'reflect-metadata';
 import { Field, ID, InputType, Int, ObjectType } from 'type-graphql';
 import { User } from './user';
@@ -6,17 +6,14 @@ import { User } from './user';
 @InputType()
 export class PostFilterInput {
 	@Field(() => Int, { nullable: true })
-	@IsInt()
 	@IsOptional()
-	limit: number;
+	limit: number = 10;
 
 	@Field(() => Int, { nullable: true })
-	@IsInt()
 	@IsOptional()
 	offset: number;
 
 	@Field(() => Int, { nullable: true })
-	@IsInt()
 	@IsOptional()
 	userId: number;
 }

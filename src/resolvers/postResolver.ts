@@ -8,7 +8,7 @@ import { Text } from '../utils/constants';
 export class PostResolver {
 	//#region CREATE
 	@Mutation(() => Post)
-	createPost(@Arg('title') title: string, @Arg('content') content: string, @Ctx() { prisma: { post }, req }: Context) {
+	createPost(@Ctx() { prisma: { post }, req }: Context, @Arg('title') title: string, @Arg('content') content: string) {
 		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
 		return post.create({
@@ -24,17 +24,17 @@ export class PostResolver {
 
 	//#region READ
 	@Query(() => [Post], { nullable: true })
-	getPosts(@Arg('filter', { nullable: true }) filter: PostFilterInput, @Ctx() { prisma: { post } }: Context) {
+	getPosts(@Ctx() { prisma: { post } }: Context, @Arg('filter', { nullable: true }) filter?: PostFilterInput) {
 		return post.findMany({
-			take: filter.limit,
-			skip: filter.offset,
-			where: { userId: filter.userId },
+			take: filter?.limit,
+			skip: filter?.offset,
+			where: { userId: filter?.userId },
 			orderBy: { updatedAt: 'desc' },
 		});
 	}
 
 	@Query(() => Post, { nullable: true })
-	getPost(@Arg('id') id: number, @Ctx() { prisma: { post } }: Context) {
+	getPost(@Ctx() { prisma: { post } }: Context, @Arg('id') id: number) {
 		return post.findUnique({ where: { id } });
 	}
 	//#endregion
