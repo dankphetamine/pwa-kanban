@@ -4,3 +4,5 @@ package/**/*
 tests/artifacts
 **/prisma/generated/**/*
 **/prisma/migrations/**/*
+*.md
+*.yml

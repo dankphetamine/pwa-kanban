@@ -2,3 +2,5 @@ node_modules
 .next
 prisma/generated/*
 .env*
+*.md
+*.yml
