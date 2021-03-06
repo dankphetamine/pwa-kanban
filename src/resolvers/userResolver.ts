@@ -1,6 +1,6 @@
 import { AuthenticationError } from 'apollo-server-express';
 import argon2id from 'argon2';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { User } from '../models/user';
 import { Text } from '../utils/constants';
 import { Context } from './../models/context';
@@ -9,6 +9,12 @@ import { cookieName } from './../utils/constants';
 
 @Resolver(User)
 export class UserResolver {
+	//Disables users from seeing other users emails. Can still see their own.
+	@FieldResolver()
+	email(@Ctx() { req }: Context, @Root() user: User) {
+		return req.session.userId === user.id ? user.email : '';
+	}
+
 	//#region CREATE
 	@Mutation(() => User)
 	async register(
