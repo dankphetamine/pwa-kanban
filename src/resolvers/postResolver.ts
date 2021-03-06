@@ -29,6 +29,7 @@ export class PostResolver {
 			take: filter?.limit,
 			skip: filter?.offset,
 			where: { userId: filter?.userId },
+			include: { author: true },
 			orderBy: { updatedAt: 'desc' },
 		});
 	}
