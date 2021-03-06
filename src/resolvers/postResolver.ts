@@ -24,7 +24,7 @@ export class PostResolver {
 
 	//#region READ
 	@Query(() => [Post], { nullable: true })
-	getPosts(@Ctx() { prisma: { post } }: Context, @Arg('filter', { nullable: true }) filter?: PostFilterInput) {
+	posts(@Ctx() { prisma: { post } }: Context, @Arg('filter', { nullable: true }) filter?: PostFilterInput) {
 		return post.findMany({
 			take: filter?.limit,
 			skip: filter?.offset,
@@ -34,7 +34,7 @@ export class PostResolver {
 	}
 
 	@Query(() => Post, { nullable: true })
-	getPost(@Ctx() { prisma: { post } }: Context, @Arg('id') id: number) {
+	post(@Ctx() { prisma: { post } }: Context, @Arg('id') id: number) {
 		return post.findUnique({ where: { id } });
 	}
 	//#endregion
