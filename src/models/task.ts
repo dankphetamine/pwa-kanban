@@ -1,9 +1,14 @@
 import 'reflect-metadata';
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import { Status } from './../utils/constants';
 import { Comment } from './comment';
 import { Project } from './project';
 import { User } from './user';
+
+registerEnumType(Status, {
+	name: 'Status',
+	description: 'Status of a task (life-cycle)',
+});
 
 @ObjectType()
 export class Task {
