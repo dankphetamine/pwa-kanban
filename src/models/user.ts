@@ -2,7 +2,9 @@ import { IsEmail, MinLength } from 'class-validator';
 import 'reflect-metadata';
 import { Field, ID, InputType, ObjectType } from 'type-graphql';
 import { Lengths } from '../utils/constants';
-import { Post } from './post';
+import { Comment } from './comment';
+import { Project } from './project';
+import { Task } from './task';
 
 @InputType()
 export class AuthInput {
@@ -32,8 +34,14 @@ export class User {
 	@Field(() => String, { nullable: true })
 	image?: string;
 
-	@Field(() => [Post], { nullable: true })
-	posts?: [Post];
+	@Field(() => [Task], { nullable: true })
+	tasks?: [Task];
+
+	@Field(() => [Comment], { nullable: true })
+	comments?: [Comment];
+
+	@Field(() => [Project], { nullable: true })
+	projects?: [Project];
 
 	@Field()
 	createdAt: Date;
