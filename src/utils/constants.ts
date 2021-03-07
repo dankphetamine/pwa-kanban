@@ -21,3 +21,10 @@ export const port = 4000;
 export const startMsg = `Backend running & listening on http://localhost${port}/graphql`;
 const frontEndPort = 3000;
 export const frontEnd = `http://localhost:${frontEndPort}`;
+
+export enum Status {
+	BACKLOG = 'backlog',
+	TODO = 'todo',
+	IN_PROGRESS = 'in progress',
+	DONE = 'done',
+}
