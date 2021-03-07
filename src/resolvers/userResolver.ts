@@ -12,7 +12,7 @@ export class UserResolver {
 	//Disables users from seeing other users emails. Can still see their own.
 	@FieldResolver()
 	email(@Ctx() { req }: Context, @Root() user: User) {
-		return req.session.userId === user.id ? user.email : '';
+		return req.session.userId === user.id ? user.email : null;
 	}
 
 	//#region CREATE
@@ -68,7 +68,7 @@ export class UserResolver {
 
 	@Query(() => [User], { nullable: true })
 	users(@Ctx() { prisma: { user } }: Context) {
-		return user.findMany({ include: { posts: true } });
+		return user.findMany(/*{ include: { posts: true } }*/);
 	}
 
 	@Query(() => User, { nullable: true })

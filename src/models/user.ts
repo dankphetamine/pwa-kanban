@@ -20,7 +20,7 @@ export class User {
 	@Field(_type => ID)
 	id: number;
 
-	@Field()
+	@Field({ nullable: true })
 	email: string;
 
 	//Not a field, thus not exposed to GraphQL
