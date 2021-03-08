@@ -5,19 +5,19 @@ import session from 'express-session';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import prisma, { Context } from './models/context';
-import { PostResolver } from './resolvers/postResolver';
 import { UserResolver } from './resolvers/userResolver';
 import { frontEnd, port, prod, sessionSecret, startMsg } from './utils/constants';
 
 const main = async () => {
 	const apollo = new ApolloServer({
-		schema: await buildSchema({ resolvers: [UserResolver, PostResolver], validate: true }),
+		schema: await buildSchema({ resolvers: [UserResolver /*PostResolver*/], validate: true }),
 		context: ({ req, res }): Context => ({ prisma, req, res }),
 		debug: !prod,
 	});
 
 	const app = express();
 
+	//Enables sessions for
 	app.use(
 		session({
 			cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }, // 7 days expiration
@@ -25,16 +25,18 @@ const main = async () => {
 			saveUninitialized: false,
 			resave: false,
 			store: new PrismaSessionStore(prisma, {
-				checkPeriod: 2 * 60 * 1000,
+				checkPeriod: 1000 * 60 * 2, // 2 minutes expiration
 				dbRecordIdIsSessionId: true,
 				dbRecordIdFunction: undefined,
 			}),
 		}),
 	);
 
+	// Applies middleware to the apollo app and enables cors from the frontend and enables crendentials for authentication.
 	apollo.applyMiddleware({ app, cors: { origin: frontEnd, credentials: true } });
 
 	app.listen(port, () => console.log(startMsg));
 };
 
+// Runs main function (awful style for production apps but very functional)
 main().catch(err => console.error(err));
