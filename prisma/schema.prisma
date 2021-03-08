@@ -11,7 +11,7 @@ model Project {
   id          Int      @id @default(autoincrement())
   ownerId     Int
   owner       User     @relation("owner", fields: [ownerId], references: [id])
-  title       String
+  name        String
   description String?
   users       User[]
   tasks       Task[]
@@ -20,19 +20,19 @@ model Project {
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   projectId   Int
-  project     Project  @relation(fields: [projectId], references: [id])
+  project     Project   @relation(fields: [projectId], references: [id])
   reporterId  Int
-  reporter    User     @relation("reporter", fields: [reporterId], references: [id])
-  asigneeId   Int
-  asignee     User     @relation("asignee", fields: [asigneeId], references: [id])
-  name        String
+  reporter    User      @relation("reporter", fields: [reporterId], references: [id])
+  asigneeId   Int?
+  asignee     User?     @relation("asignee", fields: [asigneeId], references: [id])
+  title       String
   description String?
-  status      Status @default(TODO)
+  status      Status    @default(TODO)
   comments    Comment[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 enum Status {
