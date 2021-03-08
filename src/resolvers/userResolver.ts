@@ -1,21 +1,36 @@
+import { User as DbUser } from '@prisma/client';
 import { AuthenticationError } from 'apollo-server-express';
 import argon2id from 'argon2';
 import { Arg, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
-import { User } from '../models/user';
 import { Text } from '../utils/constants';
 import { Context } from './../models/context';
-import { AuthInput } from './../models/user';
+import { AuthInput, User } from './../models/user';
 import { cookieName } from './../utils/constants';
 
 @Resolver(User)
 export class UserResolver {
-	//Disables users from seeing other users emails. Can still see their own.
+	/**
+	 * Disables users from seeing other users emails. Can still see their own.
+	 *
+	 * *Note: The null is because of declaration (as optional) in the model itself.
+	 * This is potentially a problem, to adjust simply return an empty string instead*
+	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds the request
+	 * @param user the Root of the resolver (declared as @Resolver(User)) will provide context
+	 * @returns the wanted email (if the user is the same) or null in case it isnt.
+	 */
 	@FieldResolver()
 	email(@Ctx() { req }: Context, @Root() user: User) {
-		return req.session.userId === user.id ? user.email : null;
+		return req.session?.userId === user.id ? user.email : null;
 	}
 
 	//#region CREATE
+
+	/**
+	 * Sends a register `mutation` to the API, attempting to create a new user. Throws `AuthenticationError` on failure, on success returns a user
+	 * @param input the `AuthInput` `Argument`, provided as an object (`InputType decorator`), to enable validation
+	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds the database connection
+	 * @returns user or throws an `AuthenticationError`
+	 */
 	@Mutation(() => User)
 	async register(
 		@Arg('input') input: AuthInput,
@@ -40,6 +55,14 @@ export class UserResolver {
 	//#endregion
 
 	//#region READ
+
+	/**
+	 * Sends a login `mutation` to the API, attempting to log the user in, which will,
+	 * on success provide a `userId` property on the request, or throw `AuthenticationError`
+	 * @param input the `AuthInput` `Argument`, provided as an object (`InputType decorator`), to enable validation
+	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds the database connection, request and response
+	 * @returns user or throws an `AuthenticationError`
+	 */
 	@Mutation(() => User)
 	async login(
 		@Arg('input') input: AuthInput,
@@ -61,16 +84,32 @@ export class UserResolver {
 		return dbUser;
 	}
 
+	/**
+	 * Attempts to find a user by email in the database.
+	 * @param email the email used to identify the user
+	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds users
+	 * @returns user or null
+	 */
 	@Query(() => User, { nullable: true })
 	user(@Arg('email') email: string, @Ctx() { prisma: { user } }: Context) {
 		return user.findUnique({ where: { email } });
 	}
 
+	/**
+	 * Attempts to find multiple users
+	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds users
+	 * @returns an array of users or null
+	 */
 	@Query(() => [User], { nullable: true })
 	users(@Ctx() { prisma: { user } }: Context) {
 		return user.findMany(/*{ include: { posts: true } }*/);
 	}
 
+	/**
+	 * Attempts to find a user by id (from the `Session`)
+	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds users
+	 * @returns user from database or throws an `AuthenticationError`
+	 */
 	@Query(() => User, { nullable: true })
 	currentUser(@Ctx() { prisma: { user }, req }: Context) {
 		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
@@ -80,32 +119,51 @@ export class UserResolver {
 	//#endregion
 
 	//#region UPDATE
+
+	/**
+	 * Attempts to update the users name
+	 * @param email the email used to identify the user
+	 * @param name the new name for the user
+	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds users
+	 * @returns user or throws an error
+	 */
 	@Mutation(() => User, { nullable: true })
-	updateName(@Arg('email') email: string, @Arg('name') name: string, @Ctx() { prisma: { user } }: Context) {
-		return user.update({
-			where: { email },
-			data: {
-				name: { set: name },
-			},
-		});
+	async updateName(
+		@Arg('email') email: string,
+		@Arg('name') name: string,
+		@Ctx() { prisma: { user } }: Context,
+	): Promise<DbUser> {
+		return new Promise(async (resolve, reject) =>
+			user
+				.update({
+					where: { email },
+					data: {
+						name: { set: name },
+					},
+				})
+				.then(user => resolve(user))
+				.catch(_err => reject('Unable to update user name')),
+		);
 	}
 	//#endregion
 
 	//#region DELETE
+
+	/**
+	 * Clears the cookie of the `Request`, and destroys the `Session`, resulting in a boolean representation
+	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds the `Request` and `Response`
+	 * @returns boolean | true if succeeded, false if failed
+	 */
 	@Mutation(() => Boolean)
-	logout(@Ctx() { req, res }: Context) {
+	logout(@Ctx() { req, res }: Context): Promise<boolean> {
 		res.clearCookie(cookieName);
 		return new Promise((resolve, _reject) =>
-			// req.session.destroy(err => {
-			// 	return err ? reject('No session') : resolve(true);
-			// }),
 			req.session.destroy(err => {
 				if (err) {
-					resolve(false);
-					return;
+					return resolve(false);
 				}
 
-				resolve(true);
+				return resolve(true);
 			}),
 		);
 	}
