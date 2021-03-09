@@ -5,12 +5,13 @@ import session from 'express-session';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import prisma, { Context } from './models/context';
+import { TaskResolver } from './resolvers/taskResolver';
 import { UserResolver } from './resolvers/userResolver';
 import { frontEnd, port, prod, sessionSecret, startMsg } from './utils/constants';
 
 const main = async () => {
 	const apollo = new ApolloServer({
-		schema: await buildSchema({ resolvers: [UserResolver /*PostResolver*/], validate: true }),
+		schema: await buildSchema({ resolvers: [UserResolver, TaskResolver /*PostResolver*/], validate: true }),
 		context: ({ req, res }): Context => ({ prisma, req, res }),
 		debug: !prod,
 	});

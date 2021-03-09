@@ -11,6 +11,9 @@ export const Text = {
 		login: 'Invalid login credentials.',
 		notLoggedIn: 'You are not currently logged in',
 	},
+	task: {
+		no_project: 'Project not found',
+	},
 };
 
 //All lenghts stored as enums to ensure very strict input
