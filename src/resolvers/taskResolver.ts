@@ -8,6 +8,16 @@ import { TaskFilterInput } from './../models/task';
 @Resolver(Task)
 export class TaskResolver {
 	//#region CREATE
+
+	/**
+	 * Sends a createTask `mutation` to the API, attempting to create a new task. Throws `AuthenticationError` on failure, on success returns a task
+	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds the request and database tables
+	 * @param projectId the id used to identify the task
+	 * @param title title of the task
+	 * @param description description of the task
+	 * @param asigneeId optional asignee (user ID)
+	 * @returns task or throws an `AuthenticationError`
+	 */
 	@Mutation(() => Task, { nullable: true })
 	async createTask(
 		@Ctx() { prisma: { task, project }, req }: Context,
