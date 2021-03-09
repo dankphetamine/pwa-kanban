@@ -85,7 +85,7 @@ export class UserResolver {
 	}
 
 	/**
-	 * Attempts to find a user by email in the database.
+	 * Attempts to find a user by email
 	 * @param email the email used to identify the user
 	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds users
 	 * @returns user or null
@@ -108,7 +108,7 @@ export class UserResolver {
 	/**
 	 * Attempts to find a user by id (from the `Session`)
 	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds users
-	 * @returns user from database or throws an `AuthenticationError`
+	 * @returns user or throws an `AuthenticationError`
 	 */
 	@Query(() => User, { nullable: true })
 	currentUser(@Ctx() { prisma: { user }, req }: Context) {

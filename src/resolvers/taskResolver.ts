@@ -58,10 +58,8 @@ export class TaskResolver {
 			take: filter?.limit,
 			skip: filter?.offset,
 			where: { projectId: filter?.projectId },
-			include: { project: true },
+			include: { project: true, asignee: true, reporter: true },
 			orderBy: { updatedAt: 'desc' },
-
-			/*include: { asignee: true, reporter: true, project: true }*/
 		});
 	}
 	//#endregion
