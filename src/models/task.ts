@@ -1,14 +1,27 @@
+import { IsInt, IsOptional, Max } from 'class-validator';
 import 'reflect-metadata';
-import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
+import { Field, ID, InputType, Int, ObjectType } from 'type-graphql';
 import { Status } from './../utils/constants';
 import { Comment } from './comment';
 import { Project } from './project';
 import { User } from './user';
 
-registerEnumType(Status, {
-	name: 'Status',
-	description: 'Status of a task (life-cycle)',
-});
+@InputType()
+export class TaskFilterInput {
+	@Field(() => Int, { nullable: true })
+	@IsOptional()
+	@IsInt()
+	@Max(25)
+	limit: number = 10;
+
+	@Field(() => Int, { nullable: true })
+	@IsOptional()
+	offset: number;
+
+	@Field(() => Int, { nullable: true })
+	@IsOptional()
+	projectId: number;
+}
 
 @ObjectType()
 export class Task {
@@ -25,13 +38,13 @@ export class Task {
 	asignee?: User;
 
 	@Field()
-	name: string;
+	title: string;
 
 	@Field({ nullable: true })
 	description?: string;
 
-	@Field(() => Status)
-	status: Status;
+	@Field(() => String, { defaultValue: Status.TODO })
+	status: string;
 
 	@Field(() => [Comment], { nullable: true })
 	comments?: [Comment];
