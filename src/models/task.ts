@@ -1,7 +1,7 @@
 import { IsInt, IsOptional, Max } from 'class-validator';
 import 'reflect-metadata';
 import { Field, ID, InputType, Int, ObjectType } from 'type-graphql';
-import { Status } from './../utils/constants';
+import { Numbers, Status } from './../utils/constants';
 import { Comment } from './comment';
 import { Project } from './project';
 import { User } from './user';
@@ -11,8 +11,8 @@ export class TaskFilterInput {
 	@Field(() => Int, { nullable: true })
 	@IsOptional()
 	@IsInt()
-	@Max(25)
-	limit: number = 10;
+	@Max(Numbers.queryMaxLimit)
+	limit: number = Numbers.queryLimit;
 
 	@Field(() => Int, { nullable: true })
 	@IsOptional()

@@ -17,8 +17,10 @@ export const Text = {
 };
 
 //All lenghts stored as enums to ensure very strict input
-export enum Lengths {
+export enum Numbers {
 	password = 5,
+	queryLimit = 10,
+	queryMaxLimit = 25,
 }
 
 //Task Status

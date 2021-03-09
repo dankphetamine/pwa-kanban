@@ -1,7 +1,7 @@
 import { IsEmail, MinLength } from 'class-validator';
 import 'reflect-metadata';
 import { Field, ID, InputType, ObjectType } from 'type-graphql';
-import { Lengths } from '../utils/constants';
+import { Numbers } from '../utils/constants';
 import { Comment } from './comment';
 import { Project } from './project';
 import { Task } from './task';
@@ -13,7 +13,7 @@ export class AuthInput {
 	email: string;
 
 	@Field()
-	@MinLength(Lengths.password)
+	@MinLength(Numbers.password)
 	password: string;
 }
 
