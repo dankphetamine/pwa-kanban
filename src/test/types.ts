@@ -13,6 +13,7 @@ export default gql`
 
 	type Mutation {
 		deleteUser(id: ID!): Boolean
-		updateUser(id: ID!, name: String!): User
+		createUser(name: String!): Boolean
+		updateUser(id: ID!, name: String!): Boolean
 	}
 `;
