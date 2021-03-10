@@ -8,9 +8,11 @@ export default gql`
 
 	type Query {
 		findUser(id: ID!): User
+		findUsers: [User]
 	}
 
 	type Mutation {
 		deleteUser(id: ID!): Boolean
+		updateUser(id: ID!, name: String!): User
 	}
 `;
