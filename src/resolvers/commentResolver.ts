@@ -20,10 +20,9 @@ export class CommentResolver {
 			select: { collaborators: true, tasks: true },
 		});
 
-		if (!proj?.collaborators.map(u => u.id).includes(req.session.userId))
-			throw new ForbiddenError(Text.project.no_access);
+		if (!proj?.collaborators.some(u => u.id === req.session.userId)) throw new ForbiddenError(Text.project.no_access);
 
-		if (!proj.tasks.map(t => t.id).includes(taskId)) throw new ForbiddenError(Text.project.no_task);
+		if (!proj.tasks.some(t => t.id === taskId)) throw new ForbiddenError(Text.task.no_task);
 
 		return comment.create({
 			data: {
