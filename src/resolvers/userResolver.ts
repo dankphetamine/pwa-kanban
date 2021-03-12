@@ -115,7 +115,7 @@ export class UserResolver {
 	currentUser(@Ctx() { prisma: { user }, req }: Context) {
 		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
-		return user.findUnique({ where: { id: req.session.userId } });
+		return user.findUnique({ where: { id: req.session.userId }, include: { projects: true } });
 	}
 	//#endregion
 
