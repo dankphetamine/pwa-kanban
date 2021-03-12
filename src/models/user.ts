@@ -1,21 +1,8 @@
-import { IsEmail, MinLength } from 'class-validator';
 import 'reflect-metadata';
-import { Field, ID, InputType, ObjectType } from 'type-graphql';
-import { Numbers } from '../utils/constants';
+import { Field, ID, ObjectType } from 'type-graphql';
 import { Comment } from './comment';
 import { Project } from './project';
 import { Task } from './task';
-
-@InputType()
-export class AuthInput {
-	@Field()
-	@IsEmail()
-	email: string;
-
-	@Field()
-	@MinLength(Numbers.password)
-	password: string;
-}
 
 @ObjectType()
 export class User {
