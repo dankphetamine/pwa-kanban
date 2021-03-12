@@ -1,10 +1,10 @@
-import { AuthenticationError } from 'apollo-server-express';
+import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { Context } from '../models/context';
+import { FilterInput, ProjectUpdateInput } from '../models/inputTypes';
+import { Project } from '../models/project';
 import { Task } from '../models/task';
 import { Text } from '../utils/constants';
-import { Project } from './../models/project';
-import { TaskFilterInput } from './../models/task';
 
 @Resolver(Project)
 export class ProjectResolver {
@@ -45,7 +45,7 @@ export class ProjectResolver {
 	 */
 	@Query(() => Task, { nullable: true })
 	project(@Arg('id') id: number, @Ctx() { prisma: { project } }: Context) {
-		return project.findUnique({ where: { id } });
+		return project.findUnique({ where: { id }, include: { collaborators: true } });
 	}
 
 	/**
@@ -53,20 +53,44 @@ export class ProjectResolver {
 	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds projects
 	 * @returns an array of projects or null
 	 */
-	@Query(() => [Task], { nullable: true })
-	tasks(@Ctx() { prisma: { task } }: Context, @Arg('filter', { nullable: true }) filter?: TaskFilterInput) {
-		return task.findMany({
+	@Query(() => [Project], { nullable: true })
+	projects(@Ctx() { prisma: { project } }: Context, @Arg('filter', { nullable: true }) filter?: FilterInput) {
+		return project.findMany({
 			take: filter?.limit,
 			skip: filter?.offset,
-			where: { projectId: filter?.projectId },
-			include: { project: true, asignee: true, reporter: true },
+			where: { id: filter?.id },
+			include: { owner: true, collaborators: true, tasks: true },
 			orderBy: { updatedAt: 'desc' },
 		});
 	}
 	//#endregion
 
 	//#region UPDATE
+	@Mutation(() => Project, { nullable: true })
+	async updateProjectText(
+		@Ctx() { prisma: { project }, req }: Context,
+		@Arg('id') id: number,
+		@Arg('input', { nullable: true }) input?: ProjectUpdateInput,
+	) {
+		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
+		const proj = await project.findUnique({
+			where: { id: id },
+			select: { name: true, description: true, ownerId: true },
+		});
+
+		if (!proj) throw new Error(Text.project.no_project);
+
+		if (proj.ownerId !== req.session.userId) throw new ForbiddenError(Text.project.no_permissions);
+
+		return project.update({
+			where: { id },
+			data: {
+				name: { set: input?.name ?? proj?.name },
+				description: { set: input?.description ?? proj?.description },
+			},
+		});
+	}
 	//#endregion
 
 	//#region DELETE
