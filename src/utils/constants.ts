@@ -12,11 +12,12 @@ export const Text = {
 		notLoggedIn: 'You are not currently logged in',
 	},
 	task: {
-		no_project: 'Project not found',
+		no_task: 'Task not found',
 	},
 	project: {
+		no_project: 'Project not found',
 		no_access: 'You do not have access to this project',
-		no_task: 'Invalid task, not part of project',
+		no_permissions: 'You do not have permissions',
 	},
 };
 
