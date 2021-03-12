@@ -84,13 +84,13 @@ async function addProjects() {
 			name: 'Project 1',
 			description: 'Description 1',
 			owner: { connect: { id: 1 } },
-			users: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 		create: {
 			name: 'Project 1',
 			description: 'Description 1',
 			owner: { connect: { id: 1 } },
-			users: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 	});
 
@@ -100,13 +100,13 @@ async function addProjects() {
 			name: 'Project 2',
 			description: 'Description 2',
 			owner: { connect: { id: 2 } },
-			users: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 		create: {
 			name: 'Project 2',
 			description: 'Description 2',
 			owner: { connect: { id: 2 } },
-			users: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 	});
 
@@ -115,12 +115,12 @@ async function addProjects() {
 		update: {
 			name: 'Project 3',
 			owner: { connect: { id: 3 } },
-			users: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 		create: {
 			name: 'Project 3',
 			owner: { connect: { id: 3 } },
-			users: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
+			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 	});
 
