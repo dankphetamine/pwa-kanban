@@ -14,7 +14,7 @@ import { frontEnd, port, prod, sessionSecret, startMsg } from './utils/constants
 const main = async () => {
 	const apollo = new ApolloServer({
 		schema: await buildSchema({
-			resolvers: [UserResolver, TaskResolver, CommentResolver, ProjectResolver /*PostResolver*/],
+			resolvers: [UserResolver, TaskResolver, CommentResolver, ProjectResolver],
 			validate: true,
 		}),
 		context: ({ req, res }): Context => ({ prisma, req, res }),
