@@ -14,6 +14,10 @@ export const Text = {
 	task: {
 		no_project: 'Project not found',
 	},
+	project: {
+		no_access: 'You do not have access to this project',
+		no_task: 'Invalid task, not part of project',
+	},
 };
 
 //All lenghts stored as enums to ensure very strict input
