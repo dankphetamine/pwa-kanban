@@ -2,9 +2,10 @@ import { User as DbUser } from '@prisma/client';
 import { AuthenticationError } from 'apollo-server-express';
 import argon2id from 'argon2';
 import { Arg, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { AuthInput } from '../models/inputTypes';
+import { User } from '../models/user';
 import { Text } from '../utils/constants';
 import { Context } from './../models/context';
-import { AuthInput, User } from './../models/user';
 import { cookieName } from './../utils/constants';
 
 @Resolver(User)
@@ -128,7 +129,7 @@ export class UserResolver {
 	 * @returns user or throws an error
 	 */
 	@Mutation(() => User, { nullable: true })
-	async updateName(
+	async updateUserName(
 		@Arg('email') email: string,
 		@Arg('name') name: string,
 		@Ctx() { prisma: { user } }: Context,

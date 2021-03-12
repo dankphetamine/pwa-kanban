@@ -1,9 +1,9 @@
 import { AuthenticationError } from 'apollo-server-express';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { Context } from '../models/context';
+import { FilterInput } from '../models/inputTypes';
 import { Task } from '../models/task';
 import { Text } from '../utils/constants';
-import { TaskFilterInput } from './../models/task';
 
 @Resolver(Task)
 export class TaskResolver {
@@ -30,7 +30,7 @@ export class TaskResolver {
 
 		const p = await project.findUnique({ where: { id: projectId }, select: { id: true } });
 
-		if (!p?.id) throw new Error(Text.task.no_project);
+		if (!p?.id) throw new Error(Text.project.no_project);
 
 		return task.create({
 			data: {
@@ -63,11 +63,11 @@ export class TaskResolver {
 	 * @returns an array of tasks or null
 	 */
 	@Query(() => [Task], { nullable: true })
-	tasks(@Ctx() { prisma: { task } }: Context, @Arg('filter', { nullable: true }) filter?: TaskFilterInput) {
+	tasks(@Ctx() { prisma: { task } }: Context, @Arg('filter', { nullable: true }) filter?: FilterInput) {
 		return task.findMany({
 			take: filter?.limit,
 			skip: filter?.offset,
-			where: { projectId: filter?.projectId },
+			where: { projectId: filter?.id },
 			include: { project: true, asignee: true, reporter: true },
 			orderBy: { updatedAt: 'desc' },
 		});
