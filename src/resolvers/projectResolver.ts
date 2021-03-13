@@ -3,7 +3,6 @@ import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { Context } from '../models/context';
 import { FilterInput, ProjectUpdateInput } from '../models/inputTypes';
 import { Project } from '../models/project';
-import { Task } from '../models/task';
 import { Text } from '../utils/constants';
 
 @Resolver(Project)
@@ -17,7 +16,7 @@ export class ProjectResolver {
 	 * @param description the **optional** description of the project
 	 * @returns project or throws an `AuthenticationError`
 	 */
-	@Mutation(() => Task, { nullable: true })
+	@Mutation(() => Project, { nullable: true })
 	async createProject(
 		@Ctx() { prisma: { project }, req }: Context,
 		@Arg('name') name: string,
@@ -43,9 +42,9 @@ export class ProjectResolver {
 	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds projects
 	 * @returns project or null
 	 */
-	@Query(() => Task, { nullable: true })
-	project(@Arg('id') id: number, @Ctx() { prisma: { project } }: Context) {
-		return project.findUnique({ where: { id }, include: { collaborators: true } });
+	@Query(() => Project, { nullable: true })
+	project(@Ctx() { prisma: { project } }: Context, @Arg('id') id: number) {
+		return project.findUnique({ where: { id }, include: { collaborators: true, owner: true, tasks: true } });
 	}
 
 	/**
