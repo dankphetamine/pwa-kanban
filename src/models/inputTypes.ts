@@ -13,10 +13,13 @@ export class FilterInput {
 	@Field(() => Int, { nullable: true })
 	@IsOptional()
 	offset: number;
+}
 
+@InputType()
+export class TaskFilterInput extends FilterInput {
 	@Field(() => Int, { nullable: true })
 	@IsOptional()
-	id: number;
+	projectId: number;
 }
 
 @InputType()
