@@ -2,7 +2,7 @@ import { User as DbUser } from '@prisma/client';
 import { AuthenticationError } from 'apollo-server-express';
 import argon2id from 'argon2';
 import { Arg, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
-import { AuthInput } from '../models/inputTypes';
+import { AuthInput, FilterInput } from '../models/inputTypes';
 import { User } from '../models/user';
 import { Text } from '../utils/constants';
 import { Context } from './../models/context';
@@ -102,8 +102,13 @@ export class UserResolver {
 	 * @returns an array of users or null
 	 */
 	@Query(() => [User], { nullable: true })
-	users(@Ctx() { prisma: { user } }: Context) {
-		return user.findMany({ include: { projects: true } });
+	users(@Ctx() { prisma: { user } }: Context, @Arg('filter', { nullable: true }) filter?: FilterInput) {
+		return user.findMany({
+			include: { projects: true },
+			take: filter?.limit,
+			skip: filter?.offset,
+			orderBy: { updatedAt: 'desc' },
+		});
 	}
 
 	/**
