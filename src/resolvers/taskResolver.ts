@@ -1,7 +1,7 @@
 import { AuthenticationError } from 'apollo-server-express';
 import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { Context } from '../models/context';
-import { FilterInput } from '../models/inputTypes';
+import { TaskFilterInput } from '../models/inputTypes';
 import { Task } from '../models/task';
 import { Text } from '../utils/constants';
 
@@ -24,7 +24,6 @@ export class TaskResolver {
 		@Arg('projectId') projectId: number,
 		@Arg('title') title: string,
 		@Arg('description') description?: string,
-		@Arg('asigneeId') asigneeId?: number,
 	) {
 		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
@@ -38,7 +37,6 @@ export class TaskResolver {
 				title,
 				description,
 				reporterId: req.session.userId,
-				asigneeId,
 			},
 			include: { project: true, reporter: true, asignee: true },
 		});
@@ -63,11 +61,11 @@ export class TaskResolver {
 	 * @returns an array of tasks or null
 	 */
 	@Query(() => [Task], { nullable: true })
-	tasks(@Ctx() { prisma: { task } }: Context, @Arg('filter', { nullable: true }) filter?: FilterInput) {
+	tasks(@Ctx() { prisma: { task } }: Context, @Arg('filter', { nullable: true }) filter?: TaskFilterInput) {
 		return task.findMany({
 			take: filter?.limit,
 			skip: filter?.offset,
-			where: { projectId: filter?.id },
+			where: { projectId: filter?.projectId },
 			include: { project: true, asignee: true, reporter: true },
 			orderBy: { updatedAt: 'desc' },
 		});

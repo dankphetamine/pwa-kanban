@@ -57,7 +57,6 @@ export class ProjectResolver {
 		return project.findMany({
 			take: filter?.limit,
 			skip: filter?.offset,
-			where: { id: filter?.id },
 			include: { owner: true, collaborators: true, tasks: true },
 			orderBy: { updatedAt: 'desc' },
 		});
