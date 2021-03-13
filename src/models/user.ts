@@ -6,7 +6,7 @@ import { Task } from './task';
 
 @ObjectType()
 export class User {
-	@Field(_type => ID)
+	@Field(() => ID)
 	id: number;
 
 	@Field({ nullable: true })

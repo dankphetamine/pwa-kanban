@@ -5,7 +5,7 @@ import { User } from './user';
 
 @ObjectType()
 export class Project {
-	@Field(_type => ID)
+	@Field(() => ID)
 	id: number;
 
 	@Field()
