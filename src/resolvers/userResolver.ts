@@ -93,7 +93,7 @@ export class UserResolver {
 	 */
 	@Query(() => User, { nullable: true })
 	user(@Arg('email') email: string, @Ctx() { prisma: { user } }: Context) {
-		return user.findUnique({ where: { email } });
+		return user.findUnique({ where: { email }, include: { projects: true } });
 	}
 
 	/**
@@ -103,7 +103,7 @@ export class UserResolver {
 	 */
 	@Query(() => [User], { nullable: true })
 	users(@Ctx() { prisma: { user } }: Context) {
-		return user.findMany(/*{ include: { posts: true } }*/);
+		return user.findMany({ include: { projects: true } });
 	}
 
 	/**
