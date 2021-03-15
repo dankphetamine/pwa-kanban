@@ -1,5 +1,5 @@
 import { AuthenticationError } from 'apollo-server-express';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { Context } from '../models/context';
 import { TaskFilterInput } from '../models/inputTypes';
 import { Task } from '../models/task';
@@ -21,7 +21,7 @@ export class TaskResolver {
 	@Mutation(() => Task, { nullable: true })
 	async createTask(
 		@Ctx() { prisma: { task, project }, req }: Context,
-		@Arg('projectId') projectId: number,
+		@Arg('projectId', () => Int) projectId: number,
 		@Arg('title') title: string,
 		@Arg('description') description?: string,
 	) {
@@ -51,7 +51,7 @@ export class TaskResolver {
 	 * @returns task or null
 	 */
 	@Query(() => Task, { nullable: true })
-	task(@Arg('id') id: number, @Ctx() { prisma: { task } }: Context) {
+	task(@Ctx() { prisma: { task } }: Context, @Arg('id', () => Int) id: number) {
 		return task.findUnique({ where: { id } });
 	}
 

@@ -1,5 +1,5 @@
 import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { Context } from '../models/context';
 import { FilterInput, ProjectUpdateInput } from '../models/inputTypes';
 import { Project } from '../models/project';
@@ -43,7 +43,7 @@ export class ProjectResolver {
 	 * @returns project or null
 	 */
 	@Query(() => Project, { nullable: true })
-	project(@Ctx() { prisma: { project } }: Context, @Arg('id') id: number) {
+	project(@Ctx() { prisma: { project } }: Context, @Arg('id', () => Int) id: number) {
 		return project.findUnique({ where: { id }, include: { collaborators: true, owner: true, tasks: true } });
 	}
 
@@ -67,7 +67,7 @@ export class ProjectResolver {
 	@Mutation(() => Project, { nullable: true })
 	async updateProjectText(
 		@Ctx() { prisma: { project }, req }: Context,
-		@Arg('id') id: number,
+		@Arg('id', () => Int) id: number,
 		@Arg('input', { nullable: true }) input?: ProjectUpdateInput,
 	) {
 		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);

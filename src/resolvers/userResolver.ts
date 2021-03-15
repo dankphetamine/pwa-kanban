@@ -34,8 +34,9 @@ export class UserResolver {
 	 */
 	@Mutation(() => User)
 	async register(
-		@Arg('input') input: AuthInput,
 		@Ctx()
+		@Arg('input')
+		input: AuthInput,
 		{ prisma: { user } }: Context,
 	) {
 		const dbUser = await user.findUnique({ where: { email: input.email } });
@@ -66,8 +67,9 @@ export class UserResolver {
 	 */
 	@Mutation(() => User)
 	async login(
-		@Arg('input') input: AuthInput,
 		@Ctx()
+		@Arg('input')
+		input: AuthInput,
 		{ prisma: { user }, req }: Context,
 	) {
 		const dbUser = await user.findUnique({
@@ -92,7 +94,7 @@ export class UserResolver {
 	 * @returns user or null
 	 */
 	@Query(() => User, { nullable: true })
-	user(@Arg('email') email: string, @Ctx() { prisma: { user } }: Context) {
+	user(@Ctx() { prisma: { user } }: Context, @Arg('email') email: string) {
 		return user.findUnique({ where: { email }, include: { projects: true } });
 	}
 
@@ -135,9 +137,9 @@ export class UserResolver {
 	 */
 	@Mutation(() => User, { nullable: true })
 	async updateUserName(
+		@Ctx() { prisma: { user } }: Context,
 		@Arg('email') email: string,
 		@Arg('name') name: string,
-		@Ctx() { prisma: { user } }: Context,
 	): Promise<DbUser> {
 		return new Promise(async (resolve, reject) =>
 			user

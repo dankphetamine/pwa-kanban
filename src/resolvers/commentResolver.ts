@@ -1,5 +1,5 @@
 import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
-import { Arg, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { Comment } from '../models/comment';
 import { Context } from '../models/context';
 import { Text } from '../utils/constants';
@@ -11,7 +11,7 @@ export class CommentResolver {
 	async createComment(
 		@Ctx() { prisma: { comment, project }, req }: Context,
 		@Arg('text') text: string,
-		@Arg('taskId') taskId: number,
+		@Arg('taskId', () => Int) taskId: number,
 	) {
 		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
@@ -37,7 +37,7 @@ export class CommentResolver {
 
 	//#region Read
 	@Query(() => Comment, { nullable: true })
-	comment(@Ctx() { prisma: { comment } }: Context, @Arg('id') id: number) {
+	comment(@Ctx() { prisma: { comment } }: Context, @Arg('id', () => Int) id: number) {
 		return comment.findUnique({ where: { id } });
 	}
 
