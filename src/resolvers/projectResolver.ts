@@ -92,6 +92,20 @@ export class ProjectResolver {
 	//#endregion
 
 	//#region DELETE
+	@Mutation(() => Project, { nullable: true })
+	async deleteProject(@Ctx() { prisma: { project }, req }: Context, @Arg('id', () => Int) id: number) {
+		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
+		const proj = await project.findUnique({
+			where: { id },
+			select: { name: true, description: true, ownerId: true, id: true },
+		});
+
+		if (!proj) throw new Error(Text.project.no_project);
+
+		if (proj.ownerId !== req.session.userId) throw new ForbiddenError(Text.project.no_permissions);
+
+		return project.delete({ where: { id: proj.id } });
+	}
 	//#endregion
 }
