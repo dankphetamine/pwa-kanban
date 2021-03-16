@@ -1,11 +1,11 @@
 import 'reflect-metadata';
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { Task } from './task';
 import { User } from './user';
 
 @ObjectType()
 export class Project {
-	@Field(() => ID)
+	@Field(() => Int)
 	id: number;
 
 	@Field()
