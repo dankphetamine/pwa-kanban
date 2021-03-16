@@ -1,4 +1,4 @@
-import { AuthenticationError } from 'apollo-server-express';
+import { AuthenticationError, ForbiddenError } from 'apollo-server-express';
 import { Arg, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { Context } from '../models/context';
 import { TaskFilterInput } from '../models/inputTypes';
@@ -51,8 +51,28 @@ export class TaskResolver {
 	 * @returns task or null
 	 */
 	@Query(() => Task, { nullable: true })
-	task(@Ctx() { prisma: { task } }: Context, @Arg('id', () => Int) id: number) {
-		return task.findUnique({ where: { id } });
+	async task(@Ctx() { prisma: { task }, req }: Context, @Arg('id', () => Int) id: number) {
+		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
+
+		const tsk = await task.findUnique({
+			where: { id },
+			include: { project: { select: { owner: { select: { id: true } } } } },
+		});
+
+		if (!tsk) throw new Error(Text.task.no_task);
+
+		if ((tsk.project.owner.id || tsk.reporterId) !== req.session.userId)
+			throw new ForbiddenError(Text.project.no_permissions);
+
+		return task.findUnique({
+			where: { id },
+			include: {
+				project: true,
+				reporter: true,
+				asignee: true,
+				comments: { include: { task: true } },
+			},
+		});
 	}
 
 	/**
@@ -77,6 +97,21 @@ export class TaskResolver {
 	//#endregion
 
 	//#region DELETE
+	@Mutation(() => [Task], { nullable: true })
+	async deleteTask(@Ctx() { prisma: { task }, req }: Context, @Arg('id', () => Int) id: number) {
+		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
+		const tsk = await task.findUnique({
+			where: { id },
+			include: { project: { select: { owner: { select: { id: true } } } } },
+		});
+
+		if (!tsk) throw new Error(Text.task.no_task);
+
+		if ((tsk.projectId || tsk.project.owner.id) !== req.session.userId)
+			throw new ForbiddenError(Text.project.no_permissions);
+
+		return task.delete({ where: { id } });
+	}
 	//#endregion
 }
