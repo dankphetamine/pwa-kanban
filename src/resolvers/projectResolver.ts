@@ -44,7 +44,10 @@ export class ProjectResolver {
 	 */
 	@Query(() => Project, { nullable: true })
 	project(@Ctx() { prisma: { project } }: Context, @Arg('id', () => Int) id: number) {
-		return project.findUnique({ where: { id }, include: { collaborators: true, owner: true, tasks: true } });
+		return project.findUnique({
+			where: { id },
+			include: { collaborators: true, tasks: { include: { reporter: true, asignee: true, comments: true } } },
+		});
 	}
 
 	/**
