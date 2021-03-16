@@ -33,12 +33,7 @@ export class UserResolver {
 	 * @returns user or throws an `AuthenticationError`
 	 */
 	@Mutation(() => User)
-	async register(
-		@Ctx()
-		@Arg('input')
-		input: AuthInput,
-		{ prisma: { user } }: Context,
-	) {
+	async register(@Ctx() { prisma: { user } }: Context, @Arg('input') input: AuthInput) {
 		const dbUser = await user.findUnique({ where: { email: input.email } });
 
 		if (dbUser) throw new AuthenticationError(Text.auth.register.email_taken);
@@ -66,12 +61,7 @@ export class UserResolver {
 	 * @returns user or throws an `AuthenticationError`
 	 */
 	@Mutation(() => User)
-	async login(
-		@Ctx()
-		@Arg('input')
-		input: AuthInput,
-		{ prisma: { user }, req }: Context,
-	) {
+	async login(@Ctx() { prisma: { user }, req }: Context, @Arg('input') input: AuthInput) {
 		const dbUser = await user.findUnique({
 			where: { email: input.email },
 		});
