@@ -39,6 +39,6 @@ export enum Status {
 export const sessionSecret = '12345';
 export const cookieName = 'connect.sid';
 export const port = 4000;
-export const startMsg = `Backend running & listening on http://localhost${port}/graphql`;
+export const startMsg = `Backend running & listening on http://localhost:${port}/graphql`;
 const frontEndPort = 3000;
 export const frontEnd = `http://localhost:${frontEndPort}`;
