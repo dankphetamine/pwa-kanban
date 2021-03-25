@@ -4,6 +4,7 @@ import { Context } from '../models/context';
 import { TaskFilterInput } from '../models/inputTypes';
 import { Task } from '../models/task';
 import { Text } from '../utils/constants';
+import { TaskUpdateInput } from './../models/inputTypes';
 
 @Resolver(Task)
 export class TaskResolver {
@@ -93,7 +94,34 @@ export class TaskResolver {
 	//#endregion
 
 	//#region UPDATE
+	@Mutation(() => Task, { nullable: true })
+	async updateTask(
+		@Ctx() { prisma: { task }, req }: Context,
+		@Arg('id', () => Int) id: number,
+		@Arg('input', { nullable: true }) input?: TaskUpdateInput,
+	) {
+		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
+		const t = await task.findUnique({
+			where: { id },
+			include: { project: { select: { collaborators: { select: { id: true } } } } },
+		});
+
+		if (!t) throw new Error(Text.task.no_task);
+
+		if (!t.project.collaborators.some(u => u.id === req.session.userId))
+			throw new ForbiddenError(Text.project.no_permissions);
+
+		return task.update({
+			where: { id },
+			data: {
+				title: { set: input?.title ?? t?.title },
+				description: { set: input?.description ?? t?.description },
+				status: { set: input?.status ?? t?.status },
+				asigneeId: { set: input?.asigneeId ?? t?.asigneeId },
+			},
+		});
+	}
 	//#endregion
 
 	//#region DELETE

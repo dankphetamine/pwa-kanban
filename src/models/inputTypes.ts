@@ -45,3 +45,26 @@ export class ProjectUpdateInput {
 	@IsString()
 	description?: string;
 }
+
+@InputType()
+export class TaskUpdateInput {
+	@Field({ nullable: true })
+	@IsOptional()
+	@IsString()
+	title?: string;
+
+	@Field({ nullable: true })
+	@IsOptional()
+	@IsString()
+	description?: string;
+
+	@Field({ nullable: true })
+	@IsOptional()
+	@IsInt()
+	asigneeId?: number;
+
+	@Field({ nullable: true })
+	@IsOptional()
+	@IsString()
+	status?: string;
+}
