@@ -98,7 +98,7 @@ export class TaskResolver {
 	async updateTask(
 		@Ctx() { prisma: { task }, req }: Context,
 		@Arg('id', () => Int) id: number,
-		@Arg('input', { nullable: true }) input?: TaskUpdateInput,
+		@Arg('input') input: TaskUpdateInput,
 	) {
 		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
@@ -125,19 +125,18 @@ export class TaskResolver {
 	//#endregion
 
 	//#region DELETE
-	@Mutation(() => [Task], { nullable: true })
+	@Mutation(() => Task, { nullable: true })
 	async deleteTask(@Ctx() { prisma: { task }, req }: Context, @Arg('id', () => Int) id: number) {
 		if (!req.session.userId) throw new AuthenticationError(Text.auth.notLoggedIn);
 
 		const tsk = await task.findUnique({
 			where: { id },
-			include: { project: { select: { owner: { select: { id: true } } } } },
+			include: { project: { select: { id: true, owner: { select: { id: true } } } } },
 		});
 
 		if (!tsk) throw new Error(Text.task.no_task);
 
-		if ((tsk.projectId || tsk.project.owner.id) !== req.session.userId)
-			throw new ForbiddenError(Text.project.no_permissions);
+		if (tsk.project.owner.id !== req.session.userId) throw new ForbiddenError(Text.project.no_permissions);
 
 		return task.delete({ where: { id } });
 	}
