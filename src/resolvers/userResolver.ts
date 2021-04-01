@@ -6,7 +6,6 @@ import { AuthInput, FilterInput } from '../models/inputTypes';
 import { User } from '../models/user';
 import { Text } from '../utils/constants';
 import { Context } from './../models/context';
-import { cookieName } from './../utils/constants';
 
 @Resolver(User)
 export class UserResolver {
@@ -154,7 +153,7 @@ export class UserResolver {
 	 */
 	@Mutation(() => Boolean)
 	logout(@Ctx() { req, res }: Context): Promise<boolean> {
-		res.clearCookie(cookieName);
+		res.clearCookie(process.env.COOKIE_NAME!);
 		return new Promise((resolve, _reject) =>
 			req.session.destroy(err => {
 				if (err) {
