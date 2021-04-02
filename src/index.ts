@@ -9,7 +9,7 @@ import { CommentResolver } from './resolvers/commentResolver';
 import { ProjectResolver } from './resolvers/projectResolver';
 import { TaskResolver } from './resolvers/taskResolver';
 import { UserResolver } from './resolvers/userResolver';
-import { frontEnd, port, prod, sessionSecret, startMsg } from './utils/constants';
+import { frontEnd, prod, startMsg } from './utils/constants';
 
 const main = async () => {
 	const apollo = new ApolloServer({
@@ -27,7 +27,7 @@ const main = async () => {
 	app.use(
 		session({
 			cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }, // 7 days expiration
-			secret: process.env.PASSWORD ?? sessionSecret,
+			secret: process.env.SECRET!,
 			saveUninitialized: false,
 			resave: false,
 			store: new PrismaSessionStore(prisma, {
@@ -41,7 +41,7 @@ const main = async () => {
 	// Applies middleware to the apollo app and enables cors from the frontend and enables crendentials for authentication.
 	apollo.applyMiddleware({ app, cors: { origin: frontEnd, credentials: true } });
 
-	app.listen(port, () => console.log(startMsg));
+	app.listen(process.env.PORT_BACKEND, () => console.log(startMsg));
 };
 
 // Runs main function (awful style for production apps but very functional)
