@@ -16,6 +16,13 @@ export class FilterInput {
 }
 
 @InputType()
+export class ProjectFilterInput extends FilterInput {
+	@Field(() => Int, { nullable: true })
+	@IsOptional()
+	collaboratorId?: number;
+}
+
+@InputType()
 export class TaskFilterInput extends FilterInput {
 	@Field(() => Int, { nullable: true })
 	@IsOptional()
