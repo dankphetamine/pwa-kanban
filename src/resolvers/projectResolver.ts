@@ -52,45 +52,25 @@ export class ProjectResolver {
 	}
 
 	/**
-	 * Attempts to find multiple projects. Allows to search for a specific collaborator
+	 * Attempts to find multiple projects. Allows to search for a specific `Collaborator` or `Owner` id
 	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds projects and the request
 	 * @returns an array of projects or null
 	 */
 	@Query(() => [Project], { nullable: true })
-	projects(
-		@Ctx() { prisma: { project }, req }: Context,
-		@Arg('filter', { nullable: true }) filter?: ProjectFilterInput,
-	) {
-		if (filter?.collaboratorId) {
-			return project.findMany({
-				where: { collaborators: { some: { id: req.session.userId } } },
-				take: filter?.limit,
-				skip: filter?.offset,
-				include: { owner: true, collaborators: true, tasks: true },
-				orderBy: { updatedAt: 'desc' },
-			});
-		}
-
+	projects(@Ctx() { prisma: { project } }: Context, @Arg('filter', { nullable: true }) filter?: ProjectFilterInput) {
 		return project.findMany({
-			take: filter?.limit,
-			skip: filter?.offset,
-			include: { owner: true, collaborators: true, tasks: true },
-			orderBy: { updatedAt: 'desc' },
-		});
-	}
-
-	/**
-	 * Attempts to find multiple projects
-	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds projects
-	 * @returns an array of projects or null
-	 */
-	@Query(() => [Project], { nullable: true })
-	collaboratedProjects(
-		@Ctx() { prisma: { project }, req }: Context,
-		@Arg('filter', { nullable: true }) filter?: ProjectFilterInput,
-	) {
-		return project.findMany({
-			where: { collaborators: { some: { id: req.session.userId } } },
+			where: {
+				OR: [
+					{
+						collaborators: {
+							some: {
+								id: filter?.userId,
+							},
+						},
+					},
+					{ ownerId: filter?.userId },
+				],
+			},
 			take: filter?.limit,
 			skip: filter?.offset,
 			include: { owner: true, collaborators: true, tasks: true },
