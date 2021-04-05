@@ -4,14 +4,12 @@ import { Numbers } from '../utils/constants';
 
 @InputType()
 export class FilterInput {
-	@Field(() => Int, { nullable: true })
-	@IsOptional()
+	@Field(() => Int)
 	@IsInt()
 	@Max(Numbers.queryMaxLimit)
 	limit: number = Numbers.queryLimit;
 
 	@Field(() => Int, { nullable: true })
-	@IsOptional()
 	offset: number;
 }
 
