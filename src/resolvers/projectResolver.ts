@@ -57,24 +57,23 @@ export class ProjectResolver {
 	 * @returns an array of projects or null
 	 */
 	@Query(() => [Project], { nullable: true })
-	projects(@Ctx() { prisma: { project } }: Context, @Arg('filter', { nullable: true }) filter?: ProjectFilterInput) {
+	projects(@Ctx() { prisma: { project } }: Context, @Arg('filter') filter: ProjectFilterInput) {
+		if (filter?.userId) {
+			return project.findMany({
+				where: {
+					OR: [{ collaborators: { some: { id: filter?.userId } } }, { ownerId: filter?.userId }],
+				},
+				take: filter?.limit,
+				skip: filter?.offset,
+				include: { owner: true, collaborators: true, tasks: true },
+				orderBy: { createdAt: 'asc' },
+			});
+		}
 		return project.findMany({
-			where: {
-				OR: [
-					{
-						collaborators: {
-							some: {
-								id: filter?.userId,
-							},
-						},
-					},
-					{ ownerId: filter?.userId },
-				],
-			},
 			take: filter?.limit,
 			skip: filter?.offset,
 			include: { owner: true, collaborators: true, tasks: true },
-			orderBy: { updatedAt: 'desc' },
+			orderBy: { createdAt: 'asc' },
 		});
 	}
 	//#endregion

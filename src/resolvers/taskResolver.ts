@@ -82,13 +82,13 @@ export class TaskResolver {
 	 * @returns an array of tasks or null
 	 */
 	@Query(() => [Task], { nullable: true })
-	tasks(@Ctx() { prisma: { task } }: Context, @Arg('filter', { nullable: true }) filter?: TaskFilterInput) {
+	tasks(@Ctx() { prisma: { task } }: Context, @Arg('filter') filter: TaskFilterInput) {
 		return task.findMany({
 			take: filter?.limit,
 			skip: filter?.offset,
 			where: { projectId: filter?.projectId },
 			include: { project: true, asignee: true, reporter: true },
-			orderBy: { updatedAt: 'desc' },
+			orderBy: { createdAt: 'asc' },
 		});
 	}
 	//#endregion
