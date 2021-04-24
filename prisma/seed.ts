@@ -7,15 +7,13 @@ const pass = process.env.PASSWORD!;
 async function main() {
 	/**
 	 * Order is important, since there is connected a relation which requires previous entries made, to create relation/connect
-	 * Order as follows: Users -> Projects -> Tasks -> Comments (hiearchy)
+	 * Order as follows: Users -> Projects -> Tasks (hiearchy)
 	 */
 	await addUsers();
 
 	await addProjects();
 
 	await addTasks();
-
-	await addComments();
 }
 
 main()
@@ -28,7 +26,7 @@ main()
 	});
 
 async function addUsers() {
-	const a = await prisma.user.upsert({
+	await prisma.user.upsert({
 		where: { email: 'smsj@easv.dk' },
 		update: {
 			email: 'smsj@easv.dk',
@@ -42,7 +40,7 @@ async function addUsers() {
 			image: 'https://www.easv.dk/app/uploads/2017/09/SMSJ_06_150x150_acf_cropped_quality-85.jpg',
 		},
 	});
-	const b = await prisma.user.upsert({
+	await prisma.user.upsert({
 		where: { email: 'kw@easv.dk' },
 		update: {
 			email: 'kw@easv.dk',
@@ -57,7 +55,7 @@ async function addUsers() {
 		},
 	});
 
-	const c = await prisma.user.upsert({
+	await prisma.user.upsert({
 		where: { email: 'asge0907@easv365.dk' },
 		update: {
 			email: 'asge0907@easv365.dk',
@@ -76,149 +74,87 @@ async function addUsers() {
 }
 
 async function addProjects() {
-	const a = await prisma.project.upsert({
+	await prisma.project.upsert({
 		where: { id: 1 },
 		update: {
 			name: 'Project 1',
 			description: 'Description 1',
 			owner: { connect: { id: 1 } },
-			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 		create: {
 			name: 'Project 1',
 			description: 'Description 1',
 			owner: { connect: { id: 1 } },
-			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 	});
 
-	const b = await prisma.project.upsert({
+	await prisma.project.upsert({
 		where: { id: 2 },
 		update: {
 			name: 'Project 2',
 			description: 'Description 2',
 			owner: { connect: { id: 2 } },
-			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 		create: {
 			name: 'Project 2',
 			description: 'Description 2',
 			owner: { connect: { id: 2 } },
-			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 	});
 
-	const c = await prisma.project.upsert({
+	await prisma.project.upsert({
 		where: { id: 3 },
 		update: {
 			name: 'Project 3',
 			owner: { connect: { id: 3 } },
-			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 		create: {
 			name: 'Project 3',
 			owner: { connect: { id: 3 } },
-			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 	});
 }
 
 async function addTasks() {
-	const a = await prisma.task.upsert({
+	await prisma.task.upsert({
 		where: { id: 1 },
 		update: {
 			title: 'Task 1',
 			description: 'Description 1',
 			project: { connect: { id: 1 } },
-			reporter: { connect: { id: 1 } },
-			asignee: { connect: { id: 2 } },
 		},
 		create: {
 			title: 'Task 1',
 			description: 'Description 1',
 			project: { connect: { id: 1 } },
-			reporter: { connect: { id: 1 } },
-			asignee: { connect: { id: 2 } },
 		},
 	});
 
-	const b = await prisma.task.upsert({
+	await prisma.task.upsert({
 		where: { id: 2 },
 		update: {
 			title: 'Task 2',
 			description: 'Description 2',
 			project: { connect: { id: 2 } },
-			reporter: { connect: { id: 2 } },
-			asignee: { connect: { id: 1 } },
 		},
 		create: {
 			title: 'Task 2',
 			description: 'Description 2',
 			project: { connect: { id: 2 } },
-			reporter: { connect: { id: 2 } },
-			asignee: { connect: { id: 1 } },
 		},
 	});
 
-	const c = await prisma.task.upsert({
+	await prisma.task.upsert({
 		where: { id: 3 },
 		update: {
 			title: 'Task 3',
 			description: 'Description 3',
 			project: { connect: { id: 3 } },
-			reporter: { connect: { id: 3 } },
-			asignee: { connect: { id: 3 } },
 		},
 		create: {
 			title: 'Task 3',
 			description: 'Description 3',
 			project: { connect: { id: 3 } },
-			reporter: { connect: { id: 3 } },
-			asignee: { connect: { id: 3 } },
-		},
-	});
-}
-
-async function addComments() {
-	const a = await prisma.comment.upsert({
-		where: { id: 1 },
-		update: {
-			text: 'Top text, Bottom text',
-			author: { connect: { id: 1 } },
-			task: { connect: { id: 1 } },
-		},
-		create: {
-			text: 'Top text, Bottom text',
-			author: { connect: { id: 1 } },
-			task: { connect: { id: 1 } },
-		},
-	});
-
-	const b = await prisma.comment.upsert({
-		where: { id: 2 },
-		update: {
-			text: 'Comment 2',
-			author: { connect: { id: 2 } },
-			task: { connect: { id: 2 } },
-		},
-		create: {
-			text: 'Comment 2',
-			author: { connect: { id: 2 } },
-			task: { connect: { id: 2 } },
-		},
-	});
-
-	const c = await prisma.comment.upsert({
-		where: { id: 3 },
-		update: {
-			text: 'Comment 3',
-			author: { connect: { id: 3 } },
-			task: { connect: { id: 3 } },
-		},
-		create: {
-			text: 'Comment 3',
-			author: { connect: { id: 3 } },
-			task: { connect: { id: 3 } },
 		},
 	});
 }
