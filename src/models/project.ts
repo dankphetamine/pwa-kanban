@@ -17,9 +17,6 @@ export class Project {
 	@Field(() => User)
 	owner: User;
 
-	@Field(() => [User], { nullable: true })
-	collaborators?: [User];
-
 	@Field(() => [Task], { nullable: true })
 	tasks?: [Task];
 

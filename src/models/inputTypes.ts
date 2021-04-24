@@ -65,11 +65,6 @@ export class TaskUpdateInput {
 
 	@Field({ nullable: true })
 	@IsOptional()
-	@IsInt()
-	asigneeId?: number;
-
-	@Field({ nullable: true })
-	@IsOptional()
 	@IsString()
 	status?: string;
 }

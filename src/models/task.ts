@@ -1,9 +1,7 @@
 import 'reflect-metadata';
 import { Field, ID, ObjectType } from 'type-graphql';
 import { Status } from './../utils/constants';
-import { Comment } from './comment';
 import { Project } from './project';
-import { User } from './user';
 
 @ObjectType()
 export class Task {
@@ -12,12 +10,6 @@ export class Task {
 
 	@Field(() => Project)
 	project: Project;
-
-	@Field(() => User)
-	reporter: User;
-
-	@Field(() => User, { nullable: true })
-	asignee?: User;
 
 	@Field()
 	title: string;
@@ -28,8 +20,8 @@ export class Task {
 	@Field(() => String, { defaultValue: Status.TODO })
 	status: string;
 
-	@Field(() => [Comment], { nullable: true })
-	comments?: [Comment];
+	// @Field(() => [Comment], { nullable: true })
+	// comments?: [Comment];
 
 	@Field()
 	createdAt: Date;
