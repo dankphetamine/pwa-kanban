@@ -73,8 +73,6 @@ async function addUsers() {
 				'https://cdn.shopify.com/s/files/1/0160/2840/1712/products/cheems_characterai_ry-min_739x.png?v=1606473176',
 		},
 	});
-
-	console.log('Added users: ', { a, b, c });
 }
 
 async function addProjects() {
@@ -123,8 +121,6 @@ async function addProjects() {
 			collaborators: { connect: [{ id: 1 }, { id: 2 }, { id: 3 }] },
 		},
 	});
-
-	console.log('Added projects: ', { a, b, c });
 }
 
 async function addTasks() {
@@ -181,8 +177,6 @@ async function addTasks() {
 			asignee: { connect: { id: 3 } },
 		},
 	});
-
-	console.log('Added tasks: ', { a, b, c });
 }
 
 async function addComments() {
@@ -227,6 +221,4 @@ async function addComments() {
 			task: { connect: { id: 3 } },
 		},
 	});
-
-	console.log('Added comments: ', { a, b, c });
 }
