@@ -16,7 +16,6 @@ export class TaskResolver {
 	 * @param projectId the id used to identify the task
 	 * @param title title of the task
 	 * @param description description of the task
-	 * @param asigneeId optional asignee (user ID)
 	 * @returns task or throws an `AuthenticationError`
 	 */
 	@Mutation(() => Task, { nullable: true })
@@ -37,9 +36,8 @@ export class TaskResolver {
 				projectId: p.id,
 				title,
 				description,
-				reporterId: req.session.userId,
 			},
-			include: { project: true, reporter: true, asignee: true },
+			include: { project: true },
 		});
 	}
 	//#endregion
@@ -57,22 +55,16 @@ export class TaskResolver {
 
 		const tsk = await task.findUnique({
 			where: { id },
-			include: { project: { select: { owner: { select: { id: true } } } } },
+			include: { project: { select: { ownerId: true } } },
 		});
 
 		if (!tsk) throw new Error(Text.task.no_task);
 
-		if ((tsk.project.owner.id || tsk.reporterId) !== req.session.userId)
-			throw new ForbiddenError(Text.project.no_permissions);
+		if (tsk.project.ownerId !== req.session.userId) throw new ForbiddenError(Text.project.no_permissions);
 
 		return task.findUnique({
 			where: { id },
-			include: {
-				project: true,
-				reporter: true,
-				asignee: true,
-				comments: { include: { task: true } },
-			},
+			include: { project: true },
 		});
 	}
 
@@ -87,7 +79,7 @@ export class TaskResolver {
 			take: filter?.limit,
 			skip: filter?.offset,
 			where: { projectId: filter?.projectId },
-			include: { project: true, asignee: true, reporter: true },
+			include: { project: true },
 			orderBy: { createdAt: 'asc' },
 		});
 	}
@@ -104,13 +96,12 @@ export class TaskResolver {
 
 		const t = await task.findUnique({
 			where: { id },
-			include: { project: { select: { collaborators: { select: { id: true } } } } },
+			include: { project: { select: { ownerId: true } } },
 		});
 
 		if (!t) throw new Error(Text.task.no_task);
 
-		if (!t.project.collaborators.some(u => u.id === req.session.userId))
-			throw new ForbiddenError(Text.project.no_permissions);
+		if (t.project.ownerId !== req.session.userId) throw new ForbiddenError(Text.project.no_permissions);
 
 		return task.update({
 			where: { id },
@@ -118,7 +109,6 @@ export class TaskResolver {
 				title: { set: input?.title ?? t?.title },
 				description: { set: input?.description ?? t?.description },
 				status: { set: input?.status ?? t?.status },
-				asigneeId: { set: input?.asigneeId ?? t?.asigneeId },
 			},
 		});
 	}
@@ -131,12 +121,12 @@ export class TaskResolver {
 
 		const tsk = await task.findUnique({
 			where: { id },
-			include: { project: { select: { id: true, owner: { select: { id: true } } } } },
+			include: { project: { select: { id: true, ownerId: true } } },
 		});
 
 		if (!tsk) throw new Error(Text.task.no_task);
 
-		if (tsk.project.owner.id !== req.session.userId) throw new ForbiddenError(Text.project.no_permissions);
+		if (tsk.project.ownerId !== req.session.userId) throw new ForbiddenError(Text.project.no_permissions);
 
 		return task.delete({ where: { id } });
 	}

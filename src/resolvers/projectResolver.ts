@@ -47,7 +47,7 @@ export class ProjectResolver {
 	project(@Ctx() { prisma: { project } }: Context, @Arg('id', () => Int) id: number) {
 		return project.findUnique({
 			where: { id },
-			include: { collaborators: true, tasks: { include: { reporter: true, asignee: true, comments: true } } },
+			include: { tasks: { include: { comments: true } } },
 		});
 	}
 
@@ -61,18 +61,18 @@ export class ProjectResolver {
 		if (filter?.userId) {
 			return project.findMany({
 				where: {
-					OR: [{ collaborators: { some: { id: filter?.userId } } }, { ownerId: filter?.userId }],
+					ownerId: filter?.userId,
 				},
 				take: filter?.limit,
 				skip: filter?.offset,
-				include: { owner: true, collaborators: true, tasks: true },
+				include: { owner: true, tasks: true },
 				orderBy: { createdAt: 'asc' },
 			});
 		}
 		return project.findMany({
 			take: filter?.limit,
 			skip: filter?.offset,
-			include: { owner: true, collaborators: true, tasks: true },
+			include: { owner: true, tasks: true },
 			orderBy: { createdAt: 'asc' },
 		});
 	}
