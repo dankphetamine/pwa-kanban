@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { Field, ID, ObjectType } from 'type-graphql';
-import { Comment } from './comment';
 import { Project } from './project';
 import { Task } from './task';
 
@@ -23,9 +22,6 @@ export class User {
 
 	@Field(() => [Task], { nullable: true })
 	tasks?: [Task];
-
-	@Field(() => [Comment], { nullable: true })
-	comments?: [Comment];
 
 	@Field(() => [Project], { nullable: true })
 	projects?: [Project];
