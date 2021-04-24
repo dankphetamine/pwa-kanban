@@ -31,7 +31,7 @@ export class UserResolver {
 	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds the database connection
 	 * @returns user or throws an `AuthenticationError`
 	 */
-	@Mutation(() => Boolean)
+	@Mutation(() => User)
 	async register(@Ctx() { prisma: { user } }: Context, @Arg('input') input: AuthInput) {
 		const dbUser = await user.findUnique({ where: { email: input.email } });
 
@@ -46,7 +46,7 @@ export class UserResolver {
 
 		if (!dbResponse) throw new AuthenticationError(Text.auth.register.error);
 
-		return dbResponse ? true : false;
+		return dbResponse;
 	}
 	//#endregion
 
@@ -59,7 +59,7 @@ export class UserResolver {
 	 * @param Ctx The (deconstructed) context, provided under the `Context` interface which holds the database connection, request and response
 	 * @returns user or throws an `AuthenticationError`
 	 */
-	@Mutation(() => Boolean)
+	@Mutation(() => User)
 	async login(@Ctx() { prisma: { user }, req }: Context, @Arg('input') input: AuthInput) {
 		const dbUser = await user.findUnique({
 			where: { email: input.email },
@@ -73,7 +73,7 @@ export class UserResolver {
 
 		req.session.userId = dbUser.id;
 
-		return true;
+		return dbUser;
 	}
 
 	/**
