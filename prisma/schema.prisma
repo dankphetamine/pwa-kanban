@@ -25,20 +25,8 @@ model Task {
   title       String
   description String?
   status      String    @default("todo")
-  comments    Comment[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-}
-
-model Comment {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  author    User     @relation(fields: [userId], references: [id])
-  text      String
-  taskId    Int
-  task      Task     @relation(fields: [taskId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model User {
@@ -47,7 +35,6 @@ model User {
   email         String    @unique
   password      String
   image         String?
-  comments      Comment[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   projects      Project[]

@@ -20,9 +20,6 @@ export class Task {
 	@Field(() => String, { defaultValue: Status.TODO })
 	status: string;
 
-	// @Field(() => [Comment], { nullable: true })
-	// comments?: [Comment];
-
 	@Field()
 	createdAt: Date;
 
