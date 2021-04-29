@@ -157,4 +157,19 @@ async function addTasks() {
 			project: { connect: { id: 3 } },
 		},
 	});
+
+	await prisma.task.upsert({
+		where: { id: 4 },
+		update: {
+			title: 'Task 4',
+			description: 'Description 4',
+			project: { connect: { id: 3 } },
+		},
+		create: {
+			title: 'Task 4',
+			status: 'inProgress',
+			description: 'Description 4',
+			project: { connect: { id: 3 } },
+		},
+	});
 }
