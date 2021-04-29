@@ -30,6 +30,7 @@ async function addUsers() {
 		where: { email: 'smsj@easv.dk' },
 		update: {
 			email: 'smsj@easv.dk',
+			password: await argon2id.hash([pass].reverse().join()),
 			name: 'Søren',
 			image: 'https://www.easv.dk/app/uploads/2017/09/SMSJ_06_150x150_acf_cropped_quality-85.jpg',
 		},
@@ -44,6 +45,7 @@ async function addUsers() {
 		where: { email: 'kw@easv.dk' },
 		update: {
 			email: 'kw@easv.dk',
+			password: await argon2id.hash([pass].reverse().join()),
 			name: 'Kristian',
 			image: 'https://www.easv.dk/app/uploads/2017/09/KW_03_150x150_acf_cropped_quality-85.jpg',
 		},
@@ -59,6 +61,7 @@ async function addUsers() {
 		where: { email: 'asge0907@easv365.dk' },
 		update: {
 			email: 'asge0907@easv365.dk',
+			password: await argon2id.hash(pass),
 			name: 'Asger Storm',
 			image:
 				'https://cdn.shopify.com/s/files/1/0160/2840/1712/products/cheems_characterai_ry-min_739x.png?v=1606473176',
