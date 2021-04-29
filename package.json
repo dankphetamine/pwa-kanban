@@ -6,6 +6,7 @@
 		"lint": "prettier --write .",
 		"seed": "prisma db seed --preview-feature",
 		"migrate": "prisma migrate dev --preview-feature",
+		"reset": "prisma migrate reset --force",
 		"dev": "ts-node-dev src/index.ts"
 	},
 	"license": "ISC",
