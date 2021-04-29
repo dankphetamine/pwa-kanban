@@ -31,8 +31,8 @@ export enum Numbers {
 // Task Status
 export enum Status {
 	BACKLOG = 'backlog',
-	TODO = 'todo',
-	IN_PROGRESS = 'in progress',
+	TODO = 'toDo',
+	IN_PROGRESS = 'inProgress',
 	DONE = 'done',
 }
 
