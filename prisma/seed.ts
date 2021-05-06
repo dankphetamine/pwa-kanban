@@ -7,7 +7,7 @@ const pass = process.env.PASSWORD!;
 async function main() {
 	/**
 	 * Order is important, since there is connected a relation which requires previous entries made, to create relation/connect
-	 * Order as follows: Users -> Projects -> Tasks (hiearchy)
+	 * Order as follows: Users -> Projects -> Tasks (hierarchy)
 	 */
 	await addUsers();
 
@@ -35,7 +35,7 @@ async function addUsers() {
 			image: 'https://www.easv.dk/app/uploads/2017/09/SMSJ_06_150x150_acf_cropped_quality-85.jpg',
 		},
 		create: {
-			email: `smsj@easv.dk`,
+			email: 'smsj@easv.dk',
 			password: await argon2id.hash([pass].reverse().join()),
 			name: 'Søren',
 			image: 'https://www.easv.dk/app/uploads/2017/09/SMSJ_06_150x150_acf_cropped_quality-85.jpg',
@@ -50,7 +50,7 @@ async function addUsers() {
 			image: 'https://www.easv.dk/app/uploads/2017/09/KW_03_150x150_acf_cropped_quality-85.jpg',
 		},
 		create: {
-			email: `kw@easv.dk`,
+			email: 'kw@easv.dk',
 			password: await argon2id.hash([pass].reverse().join()),
 			name: 'Kristian',
 			image: 'https://www.easv.dk/app/uploads/2017/09/KW_03_150x150_acf_cropped_quality-85.jpg',
@@ -125,11 +125,15 @@ async function addTasks() {
 			title: 'Task 1',
 			description: 'Description 1',
 			project: { connect: { id: 1 } },
+			reporter: { connect: { email: 'smsj@easv.dk' } },
+			asignee: { connect: { email: 'smsj@easv.dk' } },
 		},
 		create: {
 			title: 'Task 1',
 			description: 'Description 1',
 			project: { connect: { id: 1 } },
+			reporter: { connect: { email: 'smsj@easv.dk' } },
+			asignee: { connect: { email: 'smsj@easv.dk' } },
 		},
 	});
 
@@ -139,11 +143,15 @@ async function addTasks() {
 			title: 'Task 2',
 			description: 'Description 2',
 			project: { connect: { id: 2 } },
+			reporter: { connect: { email: 'kw@easv.dk' } },
+			asignee: { connect: { email: 'kw@easv.dk' } },
 		},
 		create: {
 			title: 'Task 2',
 			description: 'Description 2',
 			project: { connect: { id: 2 } },
+			reporter: { connect: { email: 'kw@easv.dk' } },
+			asignee: { connect: { email: 'kw@easv.dk' } },
 		},
 	});
 
@@ -153,11 +161,15 @@ async function addTasks() {
 			title: 'Task 3',
 			description: 'Description 3',
 			project: { connect: { id: 3 } },
+			reporter: { connect: { email: 'asge0907@easv365.dk' } },
+			asignee: { connect: { email: 'asge0907@easv365.dk' } },
 		},
 		create: {
 			title: 'Task 3',
 			description: 'Description 3',
 			project: { connect: { id: 3 } },
+			reporter: { connect: { email: 'asge0907@easv365.dk' } },
+			asignee: { connect: { email: 'asge0907@easv365.dk' } },
 		},
 	});
 
@@ -167,12 +179,16 @@ async function addTasks() {
 			title: 'Task 4',
 			description: 'Description 4',
 			project: { connect: { id: 3 } },
+			reporter: { connect: { email: 'asge0907@easv365.dk' } },
+			asignee: { connect: { email: 'asge0907@easv365.dk' } },
 		},
 		create: {
 			title: 'Task 4',
 			status: 'inProgress',
 			description: 'Description 4',
 			project: { connect: { id: 3 } },
+			reporter: { connect: { email: 'asge0907@easv365.dk' } },
+			asignee: { connect: { email: 'asge0907@easv365.dk' } },
 		},
 	});
 }
