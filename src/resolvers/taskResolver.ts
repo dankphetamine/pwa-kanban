@@ -36,6 +36,8 @@ export class TaskResolver {
 				projectId: p.id,
 				title,
 				description,
+				reporterId: req.session.userId,
+				asigneeId: req.session.userId,
 			},
 			include: { project: true },
 		});
