@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { Field, ID, ObjectType } from 'type-graphql';
-import { Status } from './../utils/constants';
 import { Project } from './project';
 
 @ObjectType()
@@ -17,7 +16,7 @@ export class Task {
 	@Field({ nullable: true })
 	description?: string;
 
-	@Field(() => String, { defaultValue: Status.TODO })
+	@Field(() => String)
 	status: string;
 
 	@Field()
