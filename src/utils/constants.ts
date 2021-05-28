@@ -36,5 +36,5 @@ export enum Status {
 	DONE = 'done',
 }
 
-export const startMsg = `Backend running & listening on http://localhost:${process.env.PORT_BACKEND}/graphql`;
+export const startMsg = `Backend running & listening on http://0.0.0.0:${process.env.PORT_BACKEND}/graphql`;
 export const frontEnd = `http://localhost:${process.env.PORT_FRONTEND}`;

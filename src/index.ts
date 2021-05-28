@@ -1,6 +1,6 @@
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { ApolloServer } from 'apollo-server-express';
-import 'dotenv-safe/config';
+import 'dotenv/config';
 import express from 'express';
 import session from 'express-session';
 import 'reflect-metadata';
@@ -42,7 +42,13 @@ const main = async () => {
 	// Applies middleware to the apollo app and enables cors from the frontend and enables crendentials for authentication.
 	apollo.applyMiddleware({ app, cors: { origin: frontEnd, credentials: true } });
 
-	app.listen(process.env.PORT_BACKEND, () => console.log(startMsg));
+	app.listen(
+		{
+			host: '0.0.0.0',
+			port: process.env.PORT_BACKEND,
+		},
+		() => console.log(startMsg),
+	);
 };
 
 // Runs main function (awful style for production apps but very functional)
