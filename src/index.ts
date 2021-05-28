@@ -1,5 +1,6 @@
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import { ApolloServer } from 'apollo-server-express';
+import 'dotenv-safe/config';
 import express from 'express';
 import session from 'express-session';
 import 'reflect-metadata';

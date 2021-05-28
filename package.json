@@ -3,11 +3,15 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"scripts": {
+		"build": "tsc",
+		"start": "node dist/index.js",
+		"dev": "ts-node-dev src/index.ts",
 		"lint": "prettier --write .",
 		"seed": "prisma db seed --preview-feature",
 		"migrate": "prisma migrate dev --preview-feature",
 		"reset": "prisma migrate reset --force",
-		"dev": "ts-node-dev src/index.ts"
+		"docker:build": "docker build -t backend .",
+		"docker:run": "docker run -p 4000:4000 --env-file .env -d backend"
 	},
 	"license": "ISC",
 	"dependencies": {
@@ -16,6 +20,7 @@
 		"apollo-server-express": "^2.21.0",
 		"argon2": "^0.27.1",
 		"class-validator": "^0.13.1",
+		"dotenv-safe": "^8.2.0",
 		"express": "^4.17.1",
 		"express-session": "^1.17.1",
 		"graphql": "^15.5.0",

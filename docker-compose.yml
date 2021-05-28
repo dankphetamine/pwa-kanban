@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  api:
+    build: '.'
+    env_file:
+      - .env
+    ports:
+      - 4000:4000
+    depends_on:
+      - postgres
+    networks:
+      - dev_vm
+    command: yarn start
+
+  postgres:
+    image: postgres:11.6
+    container_name: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - dev_vm
+
+networks:
+  dev_vm:
+volumes:
+  postgres:
+    name: postgres
